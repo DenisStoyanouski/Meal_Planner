@@ -1,16 +1,17 @@
 package mealplanner;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Meal {
     private final String category;
     private final String name;
-    private final List<String> ingredients;
+    private final String[] ingredients;
 
-    public Meal(String category, String name, List<String> ingredients) {
+    public Meal(String category, String name, String[] ingredients) {
         this.category = category;
         this.name = name;
-        this.ingredients = ingredients;
+        this.ingredients = ingredients.clone();
     }
 
     @Override
@@ -29,13 +30,13 @@ public class Meal {
         return name;
     }
 
-    public List<String> getIngredients() {
+    public String[] getIngredients() {
         return ingredients;
     }
 
     private String getIngredientsToString() {
         StringBuilder sb = new StringBuilder();
-        ingredients.stream().forEach(ingredient -> sb.append(ingredient).append("\n"));
+        Arrays.stream(ingredients).forEach(ingredient -> sb.append(ingredient).append("\n"));
         return sb.toString();
     }
 
