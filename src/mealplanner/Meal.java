@@ -6,17 +6,17 @@ import java.util.List;
 public class Meal {
     private final String category;
     private final String name;
-    private final String[] ingredients;
+    private final List<String> ingredients;
 
-    public Meal(String category, String name, String[] ingredients) {
+    public Meal(String category, String name, List<String> ingredients) {
         this.category = category;
         this.name = name;
-        this.ingredients = ingredients.clone();
+        this.ingredients = ingredients;
     }
 
     @Override
     public String toString() {
-        return "Category:" + category + "\n" +
+        return "Category: " + category + "\n" +
                 "Name: " + name + "\n" +
                 "Ingredients: " + "\n" +
                 getIngredientsToString();
@@ -30,13 +30,14 @@ public class Meal {
         return name;
     }
 
-    public String[] getIngredients() {
+    public List<String> getIngredients() {
         return ingredients;
     }
 
     private String getIngredientsToString() {
         StringBuilder sb = new StringBuilder();
-        Arrays.stream(ingredients).forEach(ingredient -> sb.append(ingredient).append("\n"));
+        ingredients.forEach(ingredient -> sb.append(ingredient).append("\n"));
+        sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }
 

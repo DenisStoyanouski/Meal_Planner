@@ -1,19 +1,46 @@
 package mealplanner;
 
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Menu {
 
     private static Scanner scanner = new Scanner(System.in);
     private static String category;
     private static String name;
-    private static String[] ingredients;
+    private static List<String> ingredients;
 
     private static Meal meal;
 
-    private static CookBook cookBook;
+    private static final String[] TYPE_OF_MEALS = {"breakfast", "lunch", "dinner"};
 
-    static void addMeal() {
+    private static CookBook cookBook = new CookBook();
+
+    public static void startMenu() {
+        while(true) {
+            System.out.println("What would you like to do (add, show, exit)?");
+            switch (getInput()) {
+                case "add" : addMeal();
+                break;
+                case "show" : show();
+                break;
+                case "exit" : exit();
+                break;
+                default: break;
+            }
+        }
+    }
+
+    private static void show() {
+        cookBook.printAllMeals();
+    }
+
+    private static void exit() {
+        System.out.println("Bye!");
+        System.exit(0);
+    }
+
+    private static void addMeal() {
         askQuestions();
         createMeal();
         addMealToBook();
@@ -25,11 +52,50 @@ public class Menu {
 
     private static void askQuestions() {
         System.out.println("Which meal do you want to add (breakfast, lunch, dinner)?");
-        category = getInput();
+        while (true) {
+            String categoryName = getInput();
+            if (isCategoryName(categoryName)) {
+                category = categoryName;
+                break;
+            } else {
+                System.out.println("Wrong meal category! Choose from: breakfast, lunch, dinner.");
+            }
+        }
         System.out.println("Input the meal's name:");
-        name = getInput();
+        while (true) {
+            String nameCandidate = getInput();
+            if (isRightFormat(nameCandidate) && !nameCandidate.isEmpty() && !nameCandidate.isBlank()) {
+                name = nameCandidate;
+                break;
+            } else {
+                System.out.println("Wrong format. Use letters only!");
+            }
+        }
+
         System.out.println("Input the ingredients:");
-        ingredients = getInput().split(",");
+        while (true) {
+            ingredients = Arrays.stream(getInput().split(","))
+                    .map(String::strip)
+                    .collect(Collectors.toList());
+            try {
+                for (String ingredient : ingredients) {
+                    if (!isRightFormat(ingredient)) {
+                        throw new IllegalArgumentException();
+                    }
+                }
+                break;
+            } catch (IllegalArgumentException | NullPointerException e) {
+                System.out.println("Wrong format. Use letters only!");
+            }
+        }
+    }
+
+    private static boolean isCategoryName(String category) {
+        return Arrays.asList(TYPE_OF_MEALS).contains(category);
+    }
+
+    private static boolean isRightFormat(String str) {
+        return !str.isBlank() && !str.isEmpty() && str.matches("[a-zA-Z\\s,-]*");
     }
 
     private static void createMeal() {
@@ -37,8 +103,8 @@ public class Menu {
     }
 
     private static void addMealToBook() {
-        cookBook = new CookBook();
-        System.out.println(meal.toString());
-        cookBook.addMeal(meal);
+        if (cookBook.addMeal(meal)) {
+            System.out.println("The meal has been added!");
+        }
     }
 }
