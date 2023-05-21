@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class Menu {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
     private static String category;
     private static String name;
     private static List<String> ingredients;
@@ -14,19 +14,23 @@ public class Menu {
 
     private static final String[] TYPE_OF_MEALS = {"breakfast", "lunch", "dinner"};
 
-    private static CookBook cookBook = new CookBook();
+    private static final CookBook cookBook = new CookBook();
 
     public static void startMenu() {
-        while(true) {
+        while (true) {
             System.out.println("What would you like to do (add, show, exit)?");
             switch (getInput()) {
-                case "add" : addMeal();
-                break;
-                case "show" : show();
-                break;
-                case "exit" : exit();
-                break;
-                default: break;
+                case "add":
+                    addMeal();
+                    break;
+                case "show":
+                    show();
+                    break;
+                case "exit":
+                    exit();
+                    break;
+                default:
+                    break;
             }
         }
     }
@@ -51,6 +55,12 @@ public class Menu {
     }
 
     private static void askQuestions() {
+        getCategory();
+        getName();
+        getIngredients();
+    }
+
+    private static void getCategory() {
         System.out.println("Which meal do you want to add (breakfast, lunch, dinner)?");
         while (true) {
             String categoryName = getInput();
@@ -61,6 +71,9 @@ public class Menu {
                 System.out.println("Wrong meal category! Choose from: breakfast, lunch, dinner.");
             }
         }
+    }
+
+    private static void getName() {
         System.out.println("Input the meal's name:");
         while (true) {
             String nameCandidate = getInput();
@@ -71,7 +84,9 @@ public class Menu {
                 System.out.println("Wrong format. Use letters only!");
             }
         }
+    }
 
+    private static void getIngredients() {
         System.out.println("Input the ingredients:");
         while (true) {
             ingredients = Arrays.stream(getInput().split(","))
