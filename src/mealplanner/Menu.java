@@ -1,5 +1,6 @@
 package mealplanner;
 
+import java.sql.Connection;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,10 @@ public class Menu {
 
     private static final CookBook cookBook = new CookBook();
 
+    private static Connection connection;
+
     public static void startMenu() {
+        connection = new ConnectorDB().getConnection();
         while (true) {
             System.out.println("What would you like to do (add, show, exit)?");
             switch (getInput()) {
