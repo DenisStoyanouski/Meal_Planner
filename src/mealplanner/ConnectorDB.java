@@ -1,54 +1,38 @@
 package mealplanner;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ConnectorDB {
+    private final Connection connection;
 
-    private Connection connection;
-    private final String DB_URL = "jdbc:postgresql:meal_db";
-    private final String USER = "postgres";
-    private final String PASS = "1111";
-
-    public ConnectorDB() {
-        try (Connection con = DriverManager.getConnection(DB_URL, USER, PASS)) {
-            if (con.isValid(5)) {
-                System.out.println("Connection is valid.");
-                connection = con;
-                connection.setAutoCommit(true);
-                createDefaultTables();
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public Connection getConnection() {
-        return connection;
+    public ConnectorDB() throws Exception {
+        this.connection = ConnectionManager.getConnection();
+        createDefaultTables();
     }
 
     private void createDefaultTables() {
         try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate("drop table if exists meals");
-            statement.executeUpdate("create table meals (" +
+            //statement.executeUpdate("drop table if exists meals");
+            statement.executeUpdate("create table if not exists meals (" +
                     "category varchar," +
                     "meal varchar," +
-                    "meal_id integer SERIAL" +
+                    "meal_id SERIAL" +
                     ")");
-            statement.executeUpdate("drop table if exists ingredients");
-            statement.executeUpdate("create table ingredients (" +
+            //statement.executeUpdate("drop table if exists ingredients");
+            statement.executeUpdate("create table if not exists ingredients (" +
                     "ingredient varchar," +
-                    "ingredient_id integer SERIAL," +
+                    "ingredient_id SERIAL," +
                     "meal_id integer NOT NULL" +
                     ")");
-            System.out.println("Tables are created");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void addNewMeal(String category, String name) {
-        String insert = "INSERT INTO meals (category, name) VALUES (?, ?)";
+        String insert = "INSERT INTO meals (category, meal) VALUES (?, ?)";
         try (PreparedStatement preparedStatement = connection.prepareStatement(insert)) {
             preparedStatement.setString(1, category);
             preparedStatement.setString(2, name);
@@ -77,21 +61,62 @@ public class ConnectorDB {
         return mealId;
     }
 
-    public void addIngredientsForMeal(String name, List<String> ingredients) {
-        int meal_id = getMealID(name);
+    public void addIngredientsForMeal(int mealId, List<String> ingredients) {
         String insert = "INSERT INTO ingredients (ingredient, meal_id) VALUES (?, ?)";
         for (String ingredient : ingredients) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(insert)) {
                 preparedStatement.setString(1, ingredient);
-                preparedStatement.setInt(2, meal_id);
+                preparedStatement.setInt(2, mealId);
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
+    public void getMeals() {
+        int meal_id;
+        List<String> ingredients;
+        String meals = "SELECT * FROM meals";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(meals)) {
+            try (ResultSet categoryRows = preparedStatement.executeQuery()) {
+                if (!categoryRows.isBeforeFirst() ) {
+                    System.out.println("There is not data!");
+                    return;
+                }
+                while (categoryRows.next()) {
+                    // Retrieve column values
+                    System.out.println("Category: " + categoryRows.getString("category"));
+                    System.out.println("Name: " + categoryRows.getString("meal"));
+                    meal_id = categoryRows.getInt("meal_id");
+                    System.out.println("Ingredients: ");
+                    ingredients = getIngredients(meal_id);
+                    ingredients.forEach(System.out::println);
+                    System.out.println();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void showAllMeals() {
-        
+    private List<String> getIngredients(int meal_id) {
+        List<String> ingredients = new ArrayList<>();
+        String allIngredients = "SELECT ingredient FROM ingredients where meal_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(allIngredients)) {
+            preparedStatement.setInt(1, meal_id);
+            try (ResultSet categoryRows = preparedStatement.executeQuery()) {
+                while (categoryRows.next()) {
+                    // Retrieve column values
+                    ingredients.add(categoryRows.getString("ingredient"));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ingredients;
     }
 }
