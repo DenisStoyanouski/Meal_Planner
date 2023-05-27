@@ -79,19 +79,20 @@ public class ConnectorDB {
             }
         }
     }
-    public void getMeals() {
+
+    public void getMealsByCategory(String category) {
         int meal_id;
         List<String> ingredients;
-        String meals = "SELECT * FROM meals";
+        String meals = "SELECT meal, meal_id FROM meals WHERE category = ? ORDER BY meal_id";
         try (PreparedStatement preparedStatement = connection.prepareStatement(meals)) {
+            preparedStatement.setString(1, category);
             try (ResultSet categoryRows = preparedStatement.executeQuery()) {
-                if (!categoryRows.isBeforeFirst() ) {
-                    System.out.println("There is not data!");
+                if (!categoryRows.isBeforeFirst()) {
+                    System.out.println("No meals found.");
                     return;
                 }
+                System.out.println("Category: " + category + "\n");
                 while (categoryRows.next()) {
-                    // Retrieve column values
-                    System.out.println("Category: " + categoryRows.getString("category"));
                     System.out.println("Name: " + categoryRows.getString("meal"));
                     meal_id = categoryRows.getInt("meal_id");
                     System.out.println("Ingredients: ");
@@ -101,6 +102,7 @@ public class ConnectorDB {
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
+                System.out.println("No meals found.");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -109,12 +111,11 @@ public class ConnectorDB {
 
     private List<String> getIngredients(int meal_id) {
         List<String> ingredients = new ArrayList<>();
-        String allIngredients = "SELECT ingredient FROM ingredients where meal_id = ?";
+        String allIngredients = "SELECT ingredient, ingredient_id FROM ingredients where meal_id = ? ORDER BY ingredient_id";
         try (PreparedStatement preparedStatement = connection.prepareStatement(allIngredients)) {
             preparedStatement.setInt(1, meal_id);
             try (ResultSet categoryRows = preparedStatement.executeQuery()) {
                 while (categoryRows.next()) {
-                    // Retrieve column values
                     ingredients.add(categoryRows.getString("ingredient"));
                 }
             } catch (SQLException e) {

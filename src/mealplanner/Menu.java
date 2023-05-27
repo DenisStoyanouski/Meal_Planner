@@ -39,7 +39,8 @@ public class Menu {
     }
 
     private static void show() {
-        connectorDB.getMeals();
+        getCategory("print");
+        connectorDB.getMealsByCategory(category);
     }
 
     private static void exit() {
@@ -62,13 +63,22 @@ public class Menu {
     }
 
     private static void askQuestions() {
-        getCategory();
+        getCategory("add");
         getName();
         getIngredients();
     }
 
-    private static void getCategory() {
-        System.out.println("Which meal do you want to add (breakfast, lunch, dinner)?");
+    private static void getCategory(String goal) {
+        switch (goal) {
+            case "add":
+                System.out.println("Which meal do you want to add (breakfast, lunch, dinner)?");
+                break;
+            case "print":
+                System.out.println("Which category do you want to print (breakfast, lunch, dinner)?");
+                break;
+            default:
+                break;
+        }
         while (true) {
             String categoryName = getInput();
             if (isCategoryName(categoryName)) {
