@@ -15,15 +15,21 @@ public class ConnectorDB {
     private void createDefaultTables() {
         try (Statement statement = connection.createStatement()) {
             //statement.executeUpdate("drop table if exists meals");
+            statement.executeUpdate("CREATE SEQUENCE if not exists meal_sequence\n" +
+                    "  start 1\n" +
+                    "  increment 1;");
             statement.executeUpdate("create table if not exists meals (" +
                     "category varchar," +
                     "meal varchar," +
-                    "meal_id SERIAL" +
+                    "meal_id integer" +
                     ")");
             //statement.executeUpdate("drop table if exists ingredients");
+            statement.executeUpdate("CREATE SEQUENCE if not exists ingredient_sequence\n" +
+                    "  start 1\n" +
+                    "  increment 1;");
             statement.executeUpdate("create table if not exists ingredients (" +
                     "ingredient varchar," +
-                    "ingredient_id SERIAL," +
+                    "ingredient_id integer," +
                     "meal_id integer NOT NULL" +
                     ")");
         } catch (SQLException e) {
@@ -32,7 +38,7 @@ public class ConnectorDB {
     }
 
     public void addNewMeal(String category, String name) {
-        String insert = "INSERT INTO meals (category, meal) VALUES (?, ?)";
+        String insert = "INSERT INTO meals (category, meal, meal_id) VALUES (?, ?, nextval('meal_sequence'))";
         try (PreparedStatement preparedStatement = connection.prepareStatement(insert)) {
             preparedStatement.setString(1, category);
             preparedStatement.setString(2, name);
@@ -62,7 +68,7 @@ public class ConnectorDB {
     }
 
     public void addIngredientsForMeal(int mealId, List<String> ingredients) {
-        String insert = "INSERT INTO ingredients (ingredient, meal_id) VALUES (?, ?)";
+        String insert = "INSERT INTO ingredients (ingredient, ingredient_id, meal_id) VALUES (?, nextval('ingredient_sequence'), ?)";
         for (String ingredient : ingredients) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(insert)) {
                 preparedStatement.setString(1, ingredient);
