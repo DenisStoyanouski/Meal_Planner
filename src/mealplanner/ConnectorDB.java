@@ -87,7 +87,7 @@ public class ConnectorDB {
         }
     }
 
-    public void printMealsByCategory(String category) {
+    void printMealsByCategory(String category) {
         int meal_id;
         List<String> ingredients;
         String meals = "SELECT meal, meal_id FROM meals WHERE category = ? ORDER BY meal_id";
@@ -114,7 +114,7 @@ public class ConnectorDB {
         }
     }
 
-    public List<Meal> getMealsByCategory(String category) {
+    List<Meal> getMealsByCategory(String category) {
         List<Meal> meals = new ArrayList<>();
         String query = "SELECT meal, meal_id FROM meals WHERE category = ? ORDER BY meal";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -138,7 +138,7 @@ public class ConnectorDB {
         return meals;
     }
 
-    private List<String> getIngredients(int meal_id) {
+    List<String> getIngredients(int meal_id) {
         List<String> ingredients = new ArrayList<>();
         String allIngredients = "SELECT ingredient, ingredient_id FROM ingredients where meal_id = ? ORDER BY ingredient_id";
         try (PreparedStatement preparedStatement = connection.prepareStatement(allIngredients)) {
@@ -156,7 +156,7 @@ public class ConnectorDB {
         return ingredients;
     }
 
-    public void addRowToPlan(String dayOfWeek, String typeOfMeal, int mealId) {
+    void addRowToPlan(String dayOfWeek, String typeOfMeal, int mealId) {
         if (!isRowExistInDb(dayOfWeek, typeOfMeal)) {
             addAsNewRow(dayOfWeek, typeOfMeal, mealId);
         } else {

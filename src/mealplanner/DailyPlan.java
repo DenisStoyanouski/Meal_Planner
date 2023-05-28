@@ -9,7 +9,10 @@ public class DailyPlan {
 
     public DailyPlan(String dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
+    }
 
+    public Map<String, String> getMeals() {
+        return meals;
     }
 
     public void setMeal(String category, String meal) {

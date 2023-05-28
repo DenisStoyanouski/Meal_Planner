@@ -1,13 +1,17 @@
 package mealplanner;
 
 import java.time.DayOfWeek;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static mealplanner.Menu.*;
 
 public class Planner {
     static private List<Meal> meals;
+    static private List<DailyPlan> dailyPlans;
     static private String mealName;
     static private int mealId;
     static private boolean isPlanDone = false;
@@ -67,11 +71,30 @@ public class Planner {
     }
 
     private static void printPlan() {
-        List<DailyPlan> dailyPlans = connectorDB.getPlan();
+        dailyPlans = connectorDB.getPlan();
         dailyPlans.forEach(plan -> System.out.println(plan.toString()));
     }
 
-    public static boolean isIsPlanDone() {
+    public static boolean isPlanDone() {
         return isPlanDone;
+    }
+
+    static Map<String, Integer> getAllIngredientsFromPlan() {
+        Map<String, Integer> allIngredientsFromPlan = new HashMap<>();
+        for(DailyPlan dailyPlan : dailyPlans) {
+            List<String> mealNames = dailyPlan.getMeals().values().stream().toList();
+            for (String mealName : mealNames) {
+                int mealId = connectorDB.getMealID(mealName);
+                List<String> ingredients = connectorDB.getIngredients(mealId);
+                for (String ingredient : ingredients) {
+                    if (!allIngredientsFromPlan.containsKey(ingredient)) {
+                        allIngredientsFromPlan.put(ingredient, 1);
+                    } else {
+                        allIngredientsFromPlan.put(ingredient, allIngredientsFromPlan.get(ingredient) + 1);
+                    }
+                }
+            }
+        }
+        return allIngredientsFromPlan;
     }
 }
