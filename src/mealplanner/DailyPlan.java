@@ -1,23 +1,26 @@
 package mealplanner;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DailyPlan {
     private final String dayOfWeek;
-    private final String breakfast;
-    private final String lunch;
-    private final String dinner;
+    private final Map<String, String> meals = new HashMap<>();
 
-    public DailyPlan(String dayOfWeek, String breakfast, String lunch, String dinner) {
+    public DailyPlan(String dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
-        this.breakfast = breakfast;
-        this.lunch = lunch;
-        this.dinner = dinner;
+
+    }
+
+    public void setMeal(String category, String meal) {
+        meals.put(category, meal);
     }
 
     @Override
     public String toString() {
         return dayOfWeek + "\n" +
-                "Breakfast: " + breakfast + "\n" +
-                "Lunch: " + lunch + "\n" +
-                "Dinner: " + dinner + "\n\n";
+                "Breakfast: " + meals.get("breakfast") + "\n" +
+                "Lunch: " + meals.get("lunch") + "\n" +
+                "Dinner: " + meals.get("dinner") + "\n";
     }
 }

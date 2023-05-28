@@ -1,6 +1,7 @@
 package mealplanner;
 
 import java.sql.*;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -204,5 +205,47 @@ public class ConnectorDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<DailyPlan> getPlan() {
+        List<DailyPlan> plans = new ArrayList<>();
+        String query = "SELECT category, meal_id FROM plan WHERE option = ?";
+        for(DayOfWeek day : DayOfWeek.values()) {
+            DailyPlan dailyPlan = new DailyPlan(day.name());
+            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+                preparedStatement.setString(1, day.name());
+                try (ResultSet row = preparedStatement.executeQuery()) {
+                    while (row.next()) {
+                        String category = row.getString("category");
+                        String meal = getMealById(row.getInt("meal_id"));
+                        dailyPlan.setMeal(category, meal);
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            plans.add(dailyPlan);
+        }
+        return plans;
+    }
+
+    private String getMealById(int meal_id) {
+        String meal = " ";
+        String query = "SELECT meal FROM meals WHERE meal_id = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, meal_id);
+            try (ResultSet row = preparedStatement.executeQuery()) {
+                while (row.next()) {
+                    meal = row.getString("meal");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return meal;
     }
 }

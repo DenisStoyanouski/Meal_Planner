@@ -47,8 +47,8 @@ public class Planner {
     }
 
     private static boolean isExistedName() {
-        for(Meal meal : meals) {
-            if (Objects.equals(meal.getName(),mealName)) {
+        for (Meal meal : meals) {
+            if (Objects.equals(meal.getName(), mealName)) {
                 return true;
             }
         }
@@ -56,7 +56,7 @@ public class Planner {
     }
 
     private static void printMeals() {
-        meals.forEach(meal-> System.out.println(meal.getName()));
+        meals.forEach(meal -> System.out.println(meal.getName()));
     }
 
     private static void getMealId() {
@@ -68,7 +68,8 @@ public class Planner {
     }
 
     private static void printPlan() {
-
+        List<DailyPlan> dailyPlans = connectorDB.getPlan();
+        dailyPlans.forEach(plan -> System.out.println(plan.toString()));
     }
 
 }
