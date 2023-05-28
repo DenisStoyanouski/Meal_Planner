@@ -107,7 +107,6 @@ public class ConnectorDB {
                     System.out.println();
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
                 System.out.println("No meals found.");
             }
         } catch (SQLException e) {
@@ -210,7 +209,7 @@ public class ConnectorDB {
     public List<DailyPlan> getPlan() {
         List<DailyPlan> plans = new ArrayList<>();
         String query = "SELECT category, meal_id FROM plan WHERE option = ?";
-        for(DayOfWeek day : DayOfWeek.values()) {
+        for (DayOfWeek day : DayOfWeek.values()) {
             DailyPlan dailyPlan = new DailyPlan(day.name());
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, day.name());

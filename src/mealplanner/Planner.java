@@ -7,16 +7,14 @@ import java.util.Objects;
 import static mealplanner.Menu.*;
 
 public class Planner {
-
     static private List<Meal> meals;
-
     static private String mealName;
-
     static private int mealId;
+    static private boolean isPlanDone = false;
 
     static void makePlan() {
         for (DayOfWeek day : DayOfWeek.values()) {
-            System.out.println(day.toString());
+            System.out.println(day);
             for (String typeOfMeal : TYPE_OF_MEALS) {
                 meals = connectorDB.getMealsByCategory(typeOfMeal);
                 printMeals();
@@ -28,6 +26,7 @@ public class Planner {
             System.out.printf("Yeah! We planned the meals for %s.%n%n", day);
         }
         printPlan();
+        isPlanDone = true;
     }
 
     private static void getName() {
@@ -72,4 +71,7 @@ public class Planner {
         dailyPlans.forEach(plan -> System.out.println(plan.toString()));
     }
 
+    public static boolean isIsPlanDone() {
+        return isPlanDone;
+    }
 }

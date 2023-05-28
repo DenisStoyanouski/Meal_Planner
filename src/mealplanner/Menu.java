@@ -1,6 +1,5 @@
 package mealplanner;
 
-import java.time.DayOfWeek;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,7 +37,7 @@ public class Menu {
         }
     }
 
-    private static void addMeal() throws Exception {
+    private static void addMeal() {
         askQuestions();
         connectorDB.addNewMeal(category, name);
         int mealId = connectorDB.getMealID(name);
@@ -49,10 +48,6 @@ public class Menu {
     private static void show() {
         getCategory("print");
         connectorDB.printMealsByCategory(category);
-    }
-
-    private static void plan() {
-
     }
 
     private static void exit() {
