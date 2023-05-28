@@ -165,7 +165,7 @@ public class ConnectorDB {
     }
 
     private boolean isRowExistInDb(String dayOfWeek, String typeOfMeal) {
-        String query = "SELECT COUNT(*) FROM meals WHERE option = ? AND category = ?";
+        String query = "SELECT COUNT(*) FROM plan WHERE option = ? AND category = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, dayOfWeek);
             preparedStatement.setString(2, typeOfMeal);

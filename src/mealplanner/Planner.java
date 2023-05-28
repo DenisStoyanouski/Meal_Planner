@@ -20,11 +20,12 @@ public class Planner {
             for (String typeOfMeal : TYPE_OF_MEALS) {
                 meals = connectorDB.getMealsByCategory(typeOfMeal);
                 printMeals();
-                System.out.printf("Choose the %s for %s from the list above:", typeOfMeal, day);
+                System.out.printf("Choose the %s for %s from the list above:%n", typeOfMeal, day);
                 getName();
                 getMealId();
                 connectorDB.addRowToPlan(day.toString(), typeOfMeal, mealId);
             }
+            System.out.printf("Yeah! We planned the meals for %s.%n%n", day);
         }
     }
 
