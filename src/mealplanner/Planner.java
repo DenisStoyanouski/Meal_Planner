@@ -27,6 +27,7 @@ public class Planner {
             }
             System.out.printf("Yeah! We planned the meals for %s.%n%n", day);
         }
+        printPlan();
     }
 
     private static void getName() {
@@ -65,4 +66,9 @@ public class Planner {
             }
         }
     }
+
+    private static void printPlan() {
+
+    }
+
 }
