@@ -32,7 +32,7 @@ public class ConnectorDB {
                     "ingredient_id integer," +
                     "meal_id integer NOT NULL" +
                     ")");
-
+            //statement.executeUpdate("drop table if exists plan");
             statement.executeUpdate("create table if not exists plan (" +
                     "option varchar NOT NULL," +
                     "category varchar NOT NULL," +
@@ -154,5 +154,55 @@ public class ConnectorDB {
             e.printStackTrace();
         }
         return ingredients;
+    }
+
+    public void addRowToPlan(String dayOfWeek, String typeOfMeal, int mealId) {
+        if (!isRowExistInDb(dayOfWeek, typeOfMeal)) {
+            addAsNewRow(dayOfWeek, typeOfMeal, mealId);
+        } else {
+            addAsUpdateColumn(dayOfWeek, typeOfMeal, mealId);
+        }
+    }
+
+    private boolean isRowExistInDb(String dayOfWeek, String typeOfMeal) {
+        String query = "SELECT COUNT(*) FROM meals WHERE option = ? AND category = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, dayOfWeek);
+            preparedStatement.setString(2, typeOfMeal);
+            try (ResultSet categoryRows = preparedStatement.executeQuery()) {
+                if (categoryRows.isBeforeFirst()) {
+                    return false;
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    private void addAsUpdateColumn(String dayOfWeek, String typeOfMeal, int mealId) {
+        String query = "UPDATE plan SET meal_id = ? WHERE option = ? AND category = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, mealId);
+            preparedStatement.setString(2, dayOfWeek);
+            preparedStatement.setString(3, typeOfMeal);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void addAsNewRow(String dayOfWeek, String typeOfMeal, int mealId) {
+        String insert = "INSERT INTO plan (option, category, meal_id) VALUES (?, ?, ?)";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(insert)) {
+            preparedStatement.setString(1, dayOfWeek);
+            preparedStatement.setString(2, typeOfMeal);
+            preparedStatement.setInt(3, mealId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

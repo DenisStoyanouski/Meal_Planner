@@ -6,9 +6,12 @@ import java.util.List;
 public class Meal {
     private final String category;
     private final String name;
-
     private final int meal_id;
     private List<String> ingredients;
+
+    public int getMeal_id() {
+        return meal_id;
+    }
 
     public Meal(String category, String name, int meal_id) {
         this.category = category;

@@ -12,18 +12,19 @@ public class Planner {
 
     static private String mealName;
 
+    static private int mealId;
+
     static void makePlan() {
         for (DayOfWeek day : DayOfWeek.values()) {
-            System.out.println(day);
+            System.out.println(day.toString());
             for (String typeOfMeal : TYPE_OF_MEALS) {
                 meals = connectorDB.getMealsByCategory(typeOfMeal);
                 printMeals();
                 System.out.printf("Choose the %s for %s from the list above:", typeOfMeal, day);
                 getName();
-
+                getMealId();
+                connectorDB.addRowToPlan(day.toString(), typeOfMeal, mealId);
             }
-
-
         }
     }
 
@@ -54,5 +55,13 @@ public class Planner {
 
     private static void printMeals() {
         meals.forEach(meal-> System.out.println(meal.getName()));
+    }
+
+    private static void getMealId() {
+        for (Meal meal : meals) {
+            if (Objects.equals(meal.getName(), mealName)) {
+                mealId = meal.getMeal_id();
+            }
+        }
     }
 }
