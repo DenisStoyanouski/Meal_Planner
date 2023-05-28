@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static mealplanner.Menu.*;
 
@@ -14,7 +13,6 @@ public class Planner {
     static private List<DailyPlan> dailyPlans;
     static private String mealName;
     static private int mealId;
-    static private boolean isPlanDone = false;
 
     static void makePlan() {
         for (DayOfWeek day : DayOfWeek.values()) {
@@ -30,7 +28,6 @@ public class Planner {
             System.out.printf("Yeah! We planned the meals for %s.%n%n", day);
         }
         printPlan();
-        isPlanDone = true;
     }
 
     private static void getName() {
@@ -73,10 +70,6 @@ public class Planner {
     private static void printPlan() {
         dailyPlans = connectorDB.getPlan();
         dailyPlans.forEach(plan -> System.out.println(plan.toString()));
-    }
-
-    public static boolean isPlanDone() {
-        return isPlanDone;
     }
 
     static Map<String, Integer> getAllIngredientsFromPlan() {

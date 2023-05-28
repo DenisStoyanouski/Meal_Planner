@@ -33,7 +33,7 @@ public class ConnectorDB {
                     "ingredient_id integer," +
                     "meal_id integer NOT NULL" +
                     ")");
-            //statement.executeUpdate("drop table if exists plan");
+            statement.executeUpdate("drop table if exists plan");
             statement.executeUpdate("create table if not exists plan (" +
                     "option varchar NOT NULL," +
                     "category varchar NOT NULL," +
@@ -214,6 +214,9 @@ public class ConnectorDB {
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, day.name());
                 try (ResultSet row = preparedStatement.executeQuery()) {
+                    if (!row.isBeforeFirst()) {
+                        return plans;
+                    }
                     while (row.next()) {
                         String category = row.getString("category");
                         String meal = getMealById(row.getInt("meal_id"));

@@ -4,8 +4,9 @@ import java.io.*;
 
 public class Saver {
 
-    static void doSave() {
-        if (!Planner.isPlanDone()) {
+    static void doSave(ConnectorDB connectorDB) {
+        System.out.println(connectorDB.getPlan().isEmpty());
+        if (connectorDB.getPlan().isEmpty()) {
             System.out.println("Unable to save. Plan your meals first.");
         } else {
             System.out.println("Input a filename:");
