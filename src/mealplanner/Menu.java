@@ -9,30 +9,21 @@ public class Menu {
     private static String category;
     private static String name;
     private static List<String> ingredients;
-    private static Meal meal;
     static final String[] TYPE_OF_MEALS = {"breakfast", "lunch", "dinner"};
-    private static CookBook cookBook;
     static ConnectorDB connectorDB;
 
     public static void startMenu() throws Exception {
         connectorDB = new ConnectorDB();
         while (true) {
-            System.out.println("What would you like to do (add, show, plan, exit)?");
+            System.out.println("What would you like to do (add, show, plan, save, exit)?");
             switch (getInput()) {
-                case "add":
-                    addMeal();
-                    break;
-                case "show":
-                    show();
-                    break;
-                case "plan":
-                    Planner.makePlan();
-                    break;
-                case "exit":
-                    exit();
-                    break;
-                default:
-                    break;
+                case "add" -> addMeal();
+                case "show" -> show();
+                case "plan" -> Planner.makePlan();
+                case "save" -> Saver.doSave();
+                case "exit" -> exit();
+                default -> {
+                }
             }
         }
     }
@@ -67,14 +58,10 @@ public class Menu {
 
     private static void getCategory(String goal) {
         switch (goal) {
-            case "add":
-                System.out.println("Which meal do you want to add (breakfast, lunch, dinner)?");
-                break;
-            case "print":
-                System.out.println("Which category do you want to print (breakfast, lunch, dinner)?");
-                break;
-            default:
-                break;
+            case "add" -> System.out.println("Which meal do you want to add (breakfast, lunch, dinner)?");
+            case "print" -> System.out.println("Which category do you want to print (breakfast, lunch, dinner)?");
+            default -> {
+            }
         }
         while (true) {
             String categoryName = getInput();
