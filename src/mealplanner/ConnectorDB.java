@@ -32,6 +32,12 @@ public class ConnectorDB {
                     "ingredient_id integer," +
                     "meal_id integer NOT NULL" +
                     ")");
+
+            statement.executeUpdate("create table if not exists plan (" +
+                    "option varchar NOT NULL," +
+                    "category varchar NOT NULL," +
+                    "meal_id integer NOT NULL" +
+                    ")");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -80,7 +86,7 @@ public class ConnectorDB {
         }
     }
 
-    public void getMealsByCategory(String category) {
+    public void printMealsByCategory(String category) {
         int meal_id;
         List<String> ingredients;
         String meals = "SELECT meal, meal_id FROM meals WHERE category = ? ORDER BY meal_id";
@@ -88,8 +94,7 @@ public class ConnectorDB {
             preparedStatement.setString(1, category);
             try (ResultSet categoryRows = preparedStatement.executeQuery()) {
                 if (!categoryRows.isBeforeFirst()) {
-                    System.out.println("No meals found.");
-                    return;
+                    throw new SQLException();
                 }
                 System.out.println("Category: " + category + "\n");
                 while (categoryRows.next()) {
@@ -107,6 +112,30 @@ public class ConnectorDB {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<Meal> getMealsByCategory(String category) {
+        List<Meal> meals = new ArrayList<>();
+        String query = "SELECT meal, meal_id FROM meals WHERE category = ? ORDER BY meal";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, category);
+            try (ResultSet categoryRows = preparedStatement.executeQuery()) {
+                if (!categoryRows.isBeforeFirst()) {
+                    throw new SQLException();
+                }
+                while (categoryRows.next()) {
+                    String meal = categoryRows.getString("meal");
+                    int meal_id = categoryRows.getInt("meal_id");
+                    meals.add(new Meal(category, meal, meal_id));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.out.println("No meals found.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return meals;
     }
 
     private List<String> getIngredients(int meal_id) {

@@ -6,12 +6,14 @@ import java.util.List;
 public class Meal {
     private final String category;
     private final String name;
-    private final List<String> ingredients;
 
-    public Meal(String category, String name, List<String> ingredients) {
+    private final int meal_id;
+    private List<String> ingredients;
+
+    public Meal(String category, String name, int meal_id) {
         this.category = category;
         this.name = name;
-        this.ingredients = ingredients;
+        this.meal_id = meal_id;
     }
 
     @Override

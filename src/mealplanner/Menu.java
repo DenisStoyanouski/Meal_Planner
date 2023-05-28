@@ -1,5 +1,6 @@
 package mealplanner;
 
+import java.time.DayOfWeek;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -9,25 +10,24 @@ public class Menu {
     private static String category;
     private static String name;
     private static List<String> ingredients;
-
     private static Meal meal;
-
-    private static final String[] TYPE_OF_MEALS = {"breakfast", "lunch", "dinner"};
-
+    static final String[] TYPE_OF_MEALS = {"breakfast", "lunch", "dinner"};
     private static CookBook cookBook;
-
-    private static ConnectorDB connectorDB;
+    static ConnectorDB connectorDB;
 
     public static void startMenu() throws Exception {
         connectorDB = new ConnectorDB();
         while (true) {
-            System.out.println("What would you like to do (add, show, exit)?");
+            System.out.println("What would you like to do (add, show, plan, exit)?");
             switch (getInput()) {
                 case "add":
                     addMeal();
                     break;
                 case "show":
                     show();
+                    break;
+                case "plan":
+                    Planner.makePlan();
                     break;
                 case "exit":
                     exit();
@@ -38,9 +38,21 @@ public class Menu {
         }
     }
 
+    private static void addMeal() throws Exception {
+        askQuestions();
+        connectorDB.addNewMeal(category, name);
+        int mealId = connectorDB.getMealID(name);
+        connectorDB.addIngredientsForMeal(mealId, ingredients);
+        System.out.println("The meal has been added!");
+    }
+
     private static void show() {
         getCategory("print");
-        connectorDB.getMealsByCategory(category);
+        connectorDB.printMealsByCategory(category);
+    }
+
+    private static void plan() {
+
     }
 
     private static void exit() {
@@ -48,17 +60,7 @@ public class Menu {
         System.exit(0);
     }
 
-    private static void addMeal() throws Exception {
-        askQuestions();
-        connectorDB.addNewMeal(category, name);
-        int mealId = connectorDB.getMealID(name);
-        connectorDB.addIngredientsForMeal(mealId, ingredients);
-        System.out.println("The meal has been added!");
-        //createMeal();
-        //addMealToBook();
-    }
-
-    private static String getInput() {
+    static String getInput() {
         return scanner.nextLine();
     }
 
@@ -126,17 +128,7 @@ public class Menu {
         return Arrays.asList(TYPE_OF_MEALS).contains(category);
     }
 
-    private static boolean isRightFormat(String str) {
+    static boolean isRightFormat(String str) {
         return !str.isBlank() && !str.isEmpty() && str.matches("[a-zA-Z\\s,-]*");
-    }
-
-    private static void createMeal() {
-        meal = new Meal(category, name, ingredients);
-    }
-
-    private static void addMealToBook() {
-        if (cookBook.addMeal(meal)) {
-            System.out.println("The meal has been added!");
-        }
     }
 }
