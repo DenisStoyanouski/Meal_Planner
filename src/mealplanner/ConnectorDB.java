@@ -33,7 +33,7 @@ public class ConnectorDB {
                     "ingredient_id integer," +
                     "meal_id integer NOT NULL" +
                     ")");
-            statement.executeUpdate("drop table if exists plan");
+            //statement.executeUpdate("drop table if exists plan");
             statement.executeUpdate("create table if not exists plan (" +
                     "option varchar NOT NULL," +
                     "category varchar NOT NULL," +
@@ -207,7 +207,7 @@ public class ConnectorDB {
     }
 
     public List<DailyPlan> getPlan() {
-        List<DailyPlan> plans = new ArrayList<>();
+        List<DailyPlan> weeklyPlan = new ArrayList<>();
         String query = "SELECT category, meal_id FROM plan WHERE option = ?";
         for (DayOfWeek day : DayOfWeek.values()) {
             DailyPlan dailyPlan = new DailyPlan(day.name());
@@ -215,7 +215,7 @@ public class ConnectorDB {
                 preparedStatement.setString(1, day.name());
                 try (ResultSet row = preparedStatement.executeQuery()) {
                     if (!row.isBeforeFirst()) {
-                        return plans;
+                        return weeklyPlan;
                     }
                     while (row.next()) {
                         String category = row.getString("category");
@@ -228,9 +228,9 @@ public class ConnectorDB {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            plans.add(dailyPlan);
+            weeklyPlan.add(dailyPlan);
         }
-        return plans;
+        return weeklyPlan;
     }
 
     private String getMealById(int meal_id) {

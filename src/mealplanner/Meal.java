@@ -1,6 +1,5 @@
 package mealplanner;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class Meal {
@@ -27,16 +26,8 @@ public class Meal {
                 getIngredientsToString();
     }
 
-    public String getCategory() {
-        return category;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public List<String> getIngredients() {
-        return ingredients;
     }
 
     private String getIngredientsToString() {

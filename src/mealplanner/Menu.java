@@ -20,7 +20,7 @@ public class Menu {
                 case "add" -> addMeal();
                 case "show" -> show();
                 case "plan" -> Planner.makePlan();
-                case "save" -> Saver.doSave(connectorDB);
+                case "save" -> Saver.doSave();
                 case "exit" -> exit();
                 default -> {
                 }

@@ -10,7 +10,7 @@ import static mealplanner.Menu.*;
 
 public class Planner {
     static private List<Meal> meals;
-    static private List<DailyPlan> dailyPlans;
+    static private List<DailyPlan> weeklyPlan;
     static private String mealName;
     static private int mealId;
 
@@ -28,6 +28,14 @@ public class Planner {
             System.out.printf("Yeah! We planned the meals for %s.%n%n", day);
         }
         printPlan();
+    }
+
+    static void getPlanFromDB() {
+        weeklyPlan = connectorDB.getPlan();
+    }
+
+    static List<DailyPlan> getPlan() {
+        return weeklyPlan;
     }
 
     private static void getName() {
@@ -68,13 +76,13 @@ public class Planner {
     }
 
     private static void printPlan() {
-        dailyPlans = connectorDB.getPlan();
-        dailyPlans.forEach(plan -> System.out.println(plan.toString()));
+        weeklyPlan = connectorDB.getPlan();
+        weeklyPlan.forEach(plan -> System.out.println(plan.toString()));
     }
 
     static Map<String, Integer> getAllIngredientsFromPlan() {
         Map<String, Integer> allIngredientsFromPlan = new HashMap<>();
-        for(DailyPlan dailyPlan : dailyPlans) {
+        for (DailyPlan dailyPlan : weeklyPlan) {
             List<String> mealNames = dailyPlan.getMeals().values().stream().toList();
             for (String mealName : mealNames) {
                 int mealId = connectorDB.getMealID(mealName);
